@@ -12,5 +12,10 @@ const city = ['Москва', 'Самара', 'Тюмень', 'Санкт-Пет
 'Ростов-на-дону', 'Калининград', 'Нижний новгород', 'Одесса', 'Тобольск', 'Краснодар', 'Сочи'];
 
 inputCitiesFrom.addEventListener('input', () => {
-    
+    city.forEach(elem => {
+        const filterCity = city.filter((elem) => {
+            const fixItem = elem.toLowerCase();
+            return elem.includes(inputCitiesFrom.value);
+        });
+    });
 });
