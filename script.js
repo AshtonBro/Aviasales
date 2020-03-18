@@ -7,13 +7,11 @@ inputCitiesTo = document.querySelector('.input__cities-to'),
 dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
 inputDateDepart = document.querySelector('.input__date-depart');
 
-const citiesApi = 'http://api.travelpayouts.com/data/ru/cities.json',
-    citiesDB = 'dataBase/cities.json',
-    proxy = '​https://cors-anywhere.herokuapp.com/';
+const proxy = '​https://cors-anywhere.herokuapp.com/',
+    citiesApi = 'http://api.travelpayouts.com/data/ru/cities.json',
+    citiesDB = 'dataBase/cities.json';
 
-const city = ['Москва', 'Самара', 'Тюмень', 'Санкт-Петербург', 'Минск', 'Челябинск', 
-'Керч', 'Волгоград', 'Днепропетровск', 'Екатеринбург','Ульяновск', 'Нижневартовск', 
-'Ростов-на-дону', 'Калининград', 'Нижний новгород', 'Одесса', 'Тобольск', 'Краснодар', 'Сочи'];
+let city = [];
 
 const getData = (url, callback) => {
     const request = new XMLHttpRequest();
@@ -29,6 +27,7 @@ const getData = (url, callback) => {
             console.error(request.status);
         }
     });
+    
     request.send();
 };
 
@@ -37,14 +36,14 @@ const showCity = (input, list) => {
 
     if (input.value !== '') {
         const filterCity = city.filter((elem) => {
-            const fixItem = elem.toLowerCase();
+            const fixItem = elem.name.toLowerCase();
             return fixItem.includes(input.value.toLowerCase());
         });
 
         filterCity.forEach((elem) => {
             const li = document.createElement('li');
             li.classList.add('dropdown__city');
-            li.textContent = elem;
+            li.textContent = elem.name;
             list.append(li);
         });
     }
@@ -76,5 +75,5 @@ dropdownCitiesTo.addEventListener('input', () => {
 });
 
 getData(citiesDB, (data) => {
-    console.log('data: ', data);
+    city = JSON.parse(data).filter((item) => item.name);
 });
