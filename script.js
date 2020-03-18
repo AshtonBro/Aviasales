@@ -11,11 +11,32 @@ const city = ['Москва', 'Самара', 'Тюмень', 'Санкт-Пет
 'Керч', 'Волгоград', 'Днепропетровск', 'Екатеринбург','Ульяновск', 'Нижневартовкс', 
 'Ростов-на-дону', 'Калининград', 'Нижний новгород', 'Одесса', 'Тобольск', 'Краснодар', 'Сочи'];
 
-inputCitiesFrom.addEventListener('input', () => {
-    city.forEach(elem => {
+const showCity = (input, list) => {
+    list.textContent = '';
+
+    if(input.value !== '') {
         const filterCity = city.filter((elem) => {
             const fixItem = elem.toLowerCase();
-            return elem.includes(inputCitiesFrom.value);
+            return fixItem.includes(input.value.toLowerCase());
         });
-    });
+
+        filterCity.forEach((elem) => {
+            const li = document.querySelector('li');
+            li.classList.add('dropdown__city');
+            li.textContent = elem;
+            list.append(li);
+        });
+    }
+};
+
+inputCitiesFrom.addEventListener('input', () => {
+    showCity(inputCitiesFrom, dropdownCitiesFrom);
+});
+
+dropdownCitiesFrom.addEventListener('click', (event) => {
+    const target = event.target;
+    if(target.tagName.toLowerCase() === 'li') {
+        inputCitiesFrom.value = target.textContent;
+        dropdownCitiesFrom.textContent = '';
+    }
 });
