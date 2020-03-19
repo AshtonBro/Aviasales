@@ -8,10 +8,14 @@ dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
 inputDateDepart = document.querySelector('.input__date-depart');
 
 const proxy = '​https://cors-anywhere.herokuapp.com/',
-    citiesApi = 'http://api.travelpayouts.com/data/ru/cities.json',
-    citiesDB = 'dataBase/cities.json';
+    citiesAPI = 'http://api.travelpayouts.com/data/ru/cities.json',
+    keyAPI = '0e0696b07d29106cb0c8007f0e7f46a9',
+    calendar = 'http://min-prices.aviasales.ru/calendar_preload',
+    citiesDB = 'dataBase/cities.json',
+     searchTickets = '?origin=SVX&destination=KGD&depart_date=2020-05-25&one_way=false';
 
 let city = [];
+let tickets = [];
 
 const getData = (url, callback) => {
     const request = new XMLHttpRequest();
@@ -62,18 +66,27 @@ inputCitiesFrom.addEventListener('input', () => {
     showCity(inputCitiesFrom, dropdownCitiesFrom);
 });
 
+dropdownCitiesFrom.addEventListener('click', (event) => {
+    selectCity(event, inputCitiesFrom, dropdownCitiesFrom);
+});
+
 inputCitiesTo.addEventListener('input', () => {
     showCity(inputCitiesTo, dropdownCitiesTo);
 });
 
-dropdownCitiesFrom.addEventListener('input', () => {
-    showCity(event, inputCitiesFrom, dropdownCitiesFrom);
+dropdownCitiesTo.addEventListener('click', (event) => { 
+    selectCity(event, inputCitiesTo, dropdownCitiesTo);
 });
 
-dropdownCitiesTo.addEventListener('input', () => {
-    showCity(event, inputCitiesTo, dropdownCitiesTo);
-});
-
-getData(citiesDB, (data) => {
+/*
+getData(calendar, (data) => {
     city = JSON.parse(data).filter((item) => item.name);
+}); */
+
+getData(calendar + searchTickets, (data) => {
+    tickets = JSON.parse(data);
+    // Получаем массив минимальных цен, соответствующих заданной дате вылета
+    console.log(tickets.current_depart_date_prices);
+    //Получаем  массив минимальных цен для различных дней вылета
+    console.log( tickets.best_prices);
 });
