@@ -103,22 +103,23 @@ formSearch.addEventListener('submit', (event) => {
     const cityFrom = city.find((item) => inputCitiesFrom.value === item.name);
     const cityTo = city.find((item) => inputCitiesTo.value === item.name);
 
-    const fromData = {
+    const formData = {
         from: cityFrom.code,
         to: cityTo.code,
         when: inputDateDepart.value,
     };
-
-    const requestData = '?depart_date=' + fromData.when + '&origin=' + 
-    fromData.from + '&destination=' + fromData.to + '&one_way=true'; 
+    
+    // интерполяция
+    const requestData = `?depart_date=${formData.when}&origin=${formData.from}&destination=${formData.to}&one_way=true`;
 
     getData(calendar + requestData, (response) => {
-        console.log(response);
+        renderCheap(response, formData.when);
     });
 });
 
 getData(citiesDB, (data) => {
     city = JSON.parse(data).filter((item) => item.name);
+    console.log('city: ', city);
 });
 
 //  from: city.find((item) => inputCitiesFrom.value === item.name).code
