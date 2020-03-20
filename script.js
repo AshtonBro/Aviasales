@@ -5,7 +5,9 @@ inputCitiesFrom = document.querySelector('.input__cities-from'),
 dropdownCitiesFrom = document.querySelector('.dropdown__cities-from'),
 inputCitiesTo = document.querySelector('.input__cities-to'),
 dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
-inputDateDepart = document.querySelector('.input__date-depart');
+inputDateDepart = document.querySelector('.input__date-depart'),
+cheapestTicket = document.getElementById('cheapest-ticket'),
+otherCheapTickets = document.getElementById('other-cheap-tickets');
 
 const proxy = '​https://cors-anywhere.herokuapp.com',
     citiesAPI = 'http://api.travelpayouts.com/data/ru/cities.json',
@@ -41,7 +43,7 @@ const showCity = (input, list) => {
     if (input.value !== '') {
         const filterCity = city.filter((elem) => {
             const fixItem = elem.name.toLowerCase();
-            return fixItem.startWith(input.value.toLowerCase());
+            return fixItem.startsWith(input.value.toLowerCase());
         });
 
         filterCity.forEach((elem) => {
@@ -73,9 +75,17 @@ const getData = (data) => {
     });
 };
 
+const getChanges = (num) => {}
+    if (num) {
+        return n === 1 ? 'C одной пересадкой' : 'С двумя пересадками';
+    } else {
+        return 'Без пересадок';
+    }
+;
+
 const createCard = (data) => {
-    const ticket = document.createElement('article');
-    ticket.classList.add('ticket');
+    const ticketCard = document.createElement('article');
+    ticketCard.classList.add('ticket');
 
     let deep = '';
 
@@ -105,20 +115,24 @@ const createCard = (data) => {
         </div>
         `;
     } else {
-        deep = '<h3>К сожалению на текущую дату билетов не нашлось!</h3>'
+        deep = '<h3>К сожалению на текущую дату билетов не нашлось!</h3>';
     }
 
-    ticket.insertAdjacentHTML('');
-    return ticket;
+    ticketCard.insertAdjacentHTML('afterbegin', deep);
+    return ticketCard;
 };
 
 const renderCheapDay = (cheapTicket) => {
-    
-    console.log('ticket: ', cheapTicket);
+    const ticket = createCard(cheapTicket[0]);
+
+    cheapestTicket.append(ticket);
+    console.log('ticket: ', ticket);
 };
 
 const renderCheapYear = (cheapTickets) => {
-    cheapestTicket
+
+    cheapestTicket.sort((a, b) => a.value - b.value);
+
     console.log('tickets: ', cheapTickets);
 };
 
@@ -152,6 +166,10 @@ dropdownCitiesTo.addEventListener('click', (event) => {
 formSearch.addEventListener('submit', (event) => {
     event.preventDefault();
 
+    cheapestTicket.innerHtml = '<h2>Самый дешевый билет на выбранную даиу</h2>';
+
+    otherCheapTickets.innerHtml = '<h2>Самый дешевый билет на выбранную даиу</h2>';
+
     const cityFrom = city.find((item) => inputCitiesFrom.value === item.name);
     const cityTo = city.find((item) => inputCitiesTo.value === item.name);
 
@@ -161,18 +179,33 @@ formSearch.addEventListener('submit', (event) => {
         when: inputDateDepart.value,
     };
 
-    // интерполяция
-    const requestData = `?depart_date=${formData.when}&origin=${formData.from}&destination=${formData.to}&one_way=true`;
+    if (formData.from && formData.to) {
+        // интерполяция
+        const requestData = `?depart_date=${formData.when}&origin=${formData.from}&destination=${formData.to}&one_way=true`;
 
-    getData(calendar + requestData, (response) => {
-        renderCheap(response, formData.when);
-    });
+        getData(calendar + requestData, (response) => {
+            renderCheap(response, formData.when);
+        });
+    } else {
+        alert('Введите корректное название города!');
+    }
+
+   
 });
 
-// getData(citiesDB, (data) => {
-//     city = JSON.parse(data).filter((item) => item.name);
-//     console.log('city: ', city);
-// });
+getData(citiesDB, (data) => {
+    city = JSON.parse(data).filter((item) => item.name);
+    city.sort((a, b) => {
+        if (a.name > b.name) {
+            return 1;
+        }
+        if (a.name < b.name) {
+            return -1;
+        }
+        return 0;
+    });
+    console.log('city: ', city);
+});
 
 //  from: city.find((item) => inputCitiesFrom.value === item.name).code
 
@@ -182,7 +215,7 @@ formSearch.addEventListener('submit', (event) => {
 //     console.log(tickets);
 // });
 
-const arr = ['Москва', 'Самара', 'Тюмень', 'Санкт-Петербург', 'Минск', 'Челябинск', 
+const arr = [ 'Самара', 'Тюмень', 'Москва', 'Санкт-Петербург', 'Минск', 'Челябинск', 
 'Керч', 'Волгоград', 'Днепропетровск', 'Екатеринбург','Ульяновск', 'Нижневартовкс', 
 'Ростов-на-дону', 'Калининград', 'Нижний новгород', 'Одесса', 'Тобольск', 'Краснодар', 'Сочи'];
 
