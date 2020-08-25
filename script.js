@@ -1,13 +1,13 @@
 'use script';
 
 const formSearch = document.querySelector('.form-search'),
-inputCitiesFrom = document.querySelector('.input__cities-from'),
-dropdownCitiesFrom = document.querySelector('.dropdown__cities-from'),
-inputCitiesTo = document.querySelector('.input__cities-to'),
-dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
-inputDateDepart = document.querySelector('.input__date-depart'),
-cheapestTicket = document.getElementById('cheapest-ticket'),
-otherCheapTickets = document.getElementById('other-cheap-tickets');
+    inputCitiesFrom = document.querySelector('.input__cities-from'),
+    dropdownCitiesFrom = document.querySelector('.dropdown__cities-from'),
+    inputCitiesTo = document.querySelector('.input__cities-to'),
+    dropdownCitiesTo = document.querySelector('.dropdown__cities-to'),
+    inputDateDepart = document.querySelector('.input__date-depart'),
+    cheapestTicket = document.getElementById('cheapest-ticket'),
+    otherCheapTickets = document.getElementById('other-cheap-tickets');
 console.log('otherCheapTickets: ', otherCheapTickets);
 
 const proxy = '​https://cors-anywhere.herokuapp.com/',
@@ -28,15 +28,16 @@ const getData = (url, callback, errorReq = console.error) => {
     request.open('GET', url);
 
     request.addEventListener('readystatechange', () => {
-        if (request.readyState !== 4) {return;}
-
+        if (request.readyState !== 4) {
+            return;
+        }
         if (request.status === 200) {
             callback(request.response);
         } else {
             errorReq(request.status);
         }
     });
-    
+
     request.send();
 };
 
@@ -108,7 +109,7 @@ const getLinkAviasales = (data) => {
     link += date.destination;
 
     link += '1';
-    
+
     return link;
 };
 
@@ -165,7 +166,7 @@ const renderCheapYear = (cheapTickets) => {
 
     cheapTickets.sort((a, b) => a.value - b.value);
 
-    for(let i = 0; cheapTickets.length && i < maxCount; i++){
+    for (let i = 0; cheapTickets.length && i < maxCount; i++) {
         const ticket = createCard(cheapTickets[i]);
         otherCheapTickets.append(ticket);
     }
@@ -173,11 +174,11 @@ const renderCheapYear = (cheapTickets) => {
 
 const renderCheap = (data, date) => {
     const cheapTicketYear = JSON.parse(data).best_prices;
-    
+
     const cheapTicketDay = cheapTicketYear.filter((item) => {
         return item.depart_date === date;
     });
-    
+
     renderCheapDay(cheapTicketDay);
     renderCheapYear(cheapTicketYear);
 };
@@ -194,7 +195,7 @@ inputCitiesTo.addEventListener('input', () => {
     showCity(inputCitiesTo, dropdownCitiesTo);
 });
 
-dropdownCitiesTo.addEventListener('click', (event) => { 
+dropdownCitiesTo.addEventListener('click', (event) => {
     selectCity(event, inputCitiesTo, dropdownCitiesTo);
 });
 
@@ -214,19 +215,19 @@ formSearch.addEventListener('submit', (event) => {
         // интерполяция
         const requestData = `?depart_date=${formData.when}&origin=${formData.from}&destination=${formData.to}&one_way=true`;
 
-        getData(calendar + requestData, 
+        getData(calendar + requestData,
             (response) => {
                 renderCheap(response, formData.when);
-            }, 
+            },
             (error) => {
                 cheapestTicket.style.display = 'block';
-		        cheapestTicket.innerHTML = '<h2 class ="error">В этом направлении нет рейсов</h2>';
-		        console.error('Ошибка ', error);
+                cheapestTicket.innerHTML = '<h2 class ="error">В этом направлении нет рейсов</h2>';
+                console.error('Ошибка ', error);
             });
     } else {
         alert('Введите корректное название города!');
     }
- 
+
 });
 
 // && item.destination && item.origin
@@ -256,6 +257,7 @@ getData(citiesDB, (data) => {
 //     console.log(tickets);
 // });
 
-const arr = [ 'Самара', 'Тюмень', 'Москва', 'Санкт-Петербург', 'Минск', 'Челябинск', 
-'Керч', 'Волгоград', 'Днепропетровск', 'Екатеринбург','Ульяновск', 'Нижневартовкс', 
-'Ростов-на-дону', 'Калининград', 'Нижний новгород', 'Одесса', 'Тобольск', 'Краснодар', 'Сочи'];
+const arr = ['Самара', 'Тюмень', 'Москва', 'Санкт-Петербург', 'Минск', 'Челябинск',
+    'Керч', 'Волгоград', 'Днепропетровск', 'Екатеринбург', 'Ульяновск', 'Нижневартовкс',
+    'Ростов-на-дону', 'Калининград', 'Нижний новгород', 'Одесса', 'Тобольск', 'Краснодар', 'Сочи'
+];
