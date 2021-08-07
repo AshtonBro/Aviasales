@@ -1,4 +1,4 @@
-<h2>Aviasales</h2>
+<h2>Aviasales :airplane:</h2> 
 <h3 > In this project, we work with the aviasales API. <br> You can search for air tickets and find out the price and carrier. </h3>
 
 <p >
